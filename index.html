@@ -337,17 +337,10 @@
 
 /* ============================================================
    STUDENT DATABASE
-   ============================================================
-
-   Add additional students using this format:
-
-   { name: "Student Name", grade: "2nd Grade" },
-
    ============================================================ */
 
 
 const students = [
-
 
     /* =========================
        KINDERGARTEN
@@ -416,21 +409,14 @@ const students = [
 
 function updateStudentList() {
 
-
     const selectedGrade =
         document.getElementById("grade").value;
-
 
     const studentDropdown =
         document.getElementById("studentName");
 
-
-    // Remove existing students
-
     studentDropdown.innerHTML = "";
 
-
-    // Find students matching selected grade
 
     const matchingStudents =
         students.filter(
@@ -439,29 +425,21 @@ function updateStudentList() {
         );
 
 
-    // Add matching students
-
     matchingStudents.forEach(student => {
-
 
         const option =
             document.createElement("option");
 
-
         option.value =
             student.name;
 
-
         option.textContent =
             student.name;
-
 
         studentDropdown.appendChild(option);
 
     });
 
-
-    // Update preview
 
     updateImage();
 
@@ -477,10 +455,8 @@ function updateStudentList() {
 const canvas =
     document.getElementById("imageCanvas");
 
-
 const ctx =
     canvas.getContext("2d");
-
 
 const imageStatus =
     document.getElementById("imageStatus");
@@ -489,14 +465,6 @@ const imageStatus =
 
 /* ============================================================
    BACKGROUND IMAGE
-   ============================================================
-
-   IMPORTANT:
-
-   Place this PNG in the SAME folder as this HTML file:
-
-   Good to Great Background Square.png
-
    ============================================================ */
 
 
@@ -538,20 +506,17 @@ backgroundImage.src =
 
 function updateImage() {
 
-
-    // Don't draw until background has loaded
-
     if (
         !backgroundImage.complete ||
         backgroundImage.naturalWidth === 0
     ) {
-
         return;
-
     }
 
 
-    // Clear canvas
+    /* =========================
+       CLEAR CANVAS
+       ========================= */
 
     ctx.clearRect(
         0,
@@ -561,7 +526,9 @@ function updateImage() {
     );
 
 
-    // Draw background
+    /* =========================
+       DRAW BACKGROUND
+       ========================= */
 
     ctx.drawImage(
         backgroundImage,
@@ -572,54 +539,20 @@ function updateImage() {
     );
 
 
-    // Center text
-
-    ctx.textAlign =
-        "center";
-
-
-
     /* =========================
-       GRADE
+       GET FORM VALUES
        ========================= */
 
-    ctx.font =
-        "bold 24px Arial";
-
-    ctx.fillStyle =
-        "#222222";
+    const grade =
+        document.getElementById("grade").value;
 
 
-    ctx.fillText(
-        document.getElementById("grade").value,
-        400,
-        120
-    );
+    const studentName =
+        document.getElementById("studentName").value;
 
 
-
-    /* =========================
-       STUDENT NAME
-       ========================= */
-
-    ctx.font =
-        "bold 40px Georgia";
-
-    ctx.fillStyle =
-        "#1a73e8";
-
-
-    ctx.fillText(
-        document.getElementById("studentName").value,
-        400,
-        220
-    );
-
-
-
-    /* =========================
-       CATEGORY
-       ========================= */
+    const firstName =
+        studentName.trim().split(" ")[0];
 
 
     const selectedCategory =
@@ -628,56 +561,107 @@ function updateImage() {
         ).value;
 
 
+    const description =
+        document.getElementById("customText").value.trim();
+
+
+
+    /* ========================================================
+       FADED CATEGORY BACKGROUND
+       ========================================================
+
+       This sits behind the paragraph.
+
+       It is:
+       - ALL CAPS
+       - Very large
+       - Light gray
+       - Faded
+       ======================================================== */
+
+
+    ctx.save();
+
+    ctx.textAlign = "center";
+
     ctx.font =
-        "italic bold 32px Arial";
+        "bold 150px Arial";
 
     ctx.fillStyle =
-        "#da1b60";
-
+        "rgba(120, 120, 120, 0.13)";
 
     ctx.fillText(
-        selectedCategory,
+        selectedCategory.toUpperCase(),
         400,
-        320
+        215
     );
 
+    ctx.restore();
 
 
-    /* =========================
-       DESCRIPTION
-       ========================= */
+
+    /* ========================================================
+       MAIN RECOGNITION PARAGRAPH
+       ======================================================== */
 
 
-    ctx.font =
-        "20px Arial";
+    const mainText =
+        `Days Creek Charter School recognizes ${firstName} in ${grade} in the category of ${selectedCategory}. ${description}`;
+
+
+    /*
+       The paragraph is centered around this area.
+
+       The top of the text is approximately
+       1/4 of the way down the 800px image.
+    */
+
+    const startY = 205;
+
+    const maxWidth = 650;
+
+    const lineHeight = 34;
+
+
+    ctx.save();
+
+    ctx.textAlign = "center";
+
+    ctx.textBaseline = "top";
 
     ctx.fillStyle =
-        "#444444";
+        "#1d2d50";
+
+    ctx.font =
+        "bold 25px Arial";
 
 
-    const text =
-        document.getElementById("customText").value;
+    /*
+       Wrap the entire message as one paragraph.
+    */
 
-
-    wrapText(
+    wrapParagraph(
         ctx,
-        text,
+        mainText,
         400,
-        420,
-        600,
-        28
+        startY,
+        maxWidth,
+        lineHeight
     );
+
+
+    ctx.restore();
 
 }
 
 
 
 /* ============================================================
-   TEXT WRAPPING
+   PARAGRAPH WRAPPING
    ============================================================ */
 
 
-function wrapText(
+function wrapParagraph(
     context,
     text,
     x,
@@ -686,58 +670,41 @@ function wrapText(
     lineHeight
 ) {
 
-
     const words =
-        text.split(" ");
+        text.split(/\s+/);
 
+    let line = "";
 
-    let line =
-        "";
+    const lines = [];
 
 
     for (
-        let n = 0;
-        n < words.length;
-        n++
+        let i = 0;
+        i < words.length;
+        i++
     ) {
 
-
         const testLine =
-            line +
-            words[n] +
-            " ";
+            line
+            ? line + " " + words[i]
+            : words[i];
 
 
-        const metrics =
-            context.measureText(
-                testLine
-            );
+        const width =
+            context.measureText(testLine).width;
 
 
         if (
-            metrics.width > maxWidth &&
-            n > 0
+            width > maxWidth &&
+            line !== ""
         ) {
 
-
-            context.fillText(
-                line,
-                x,
-                y
-            );
-
+            lines.push(line);
 
             line =
-                words[n] +
-                " ";
-
-
-            y +=
-                lineHeight;
-
+                words[i];
 
         } else {
-
 
             line =
                 testLine;
@@ -747,10 +714,25 @@ function wrapText(
     }
 
 
-    context.fillText(
-        line,
-        x,
-        y
+    if (line) {
+        lines.push(line);
+    }
+
+
+    /*
+       Draw each line centered.
+    */
+
+    lines.forEach(
+        (lineText, index) => {
+
+            context.fillText(
+                lineText,
+                x,
+                y + (index * lineHeight)
+            );
+
+        }
     );
 
 }
@@ -763,7 +745,6 @@ function wrapText(
 
 
 function downloadImage() {
-
 
     const link =
         document.createElement("a");
