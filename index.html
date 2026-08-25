@@ -217,7 +217,6 @@
             3. Select Recognition Area
         </label>
 
-
         <div class="radio-group">
 
             <label class="radio-option">
@@ -291,7 +290,6 @@
             Describe what they did to get this recognition:
         </label>
 
-
         <textarea
             id="customText"
             placeholder="Describe what the student did to earn this recognition..."
@@ -311,13 +309,11 @@
             Live Preview:
         </label>
 
-
         <canvas
             id="imageCanvas"
             width="800"
             height="800"
         ></canvas>
-
 
         <div id="imageStatus">
             Loading background image...
@@ -420,12 +416,8 @@ function updateStudentList() {
         document.getElementById("studentName");
 
 
-    /* Clear existing names */
-
     studentDropdown.innerHTML = "";
 
-
-    /* Find students in selected grade */
 
     const matchingStudents =
         students.filter(
@@ -433,8 +425,6 @@ function updateStudentList() {
                 student.grade === selectedGrade
         );
 
-
-    /* Add matching students */
 
     matchingStudents.forEach(student => {
 
@@ -475,14 +465,6 @@ const imageStatus =
 
 /* ============================================================
    BACKGROUND IMAGE
-   ============================================================
-
-   Place:
-
-   Good to Great Background Square.png
-
-   in the same folder as this HTML file.
-
    ============================================================ */
 
 const backgroundImage =
@@ -517,13 +499,33 @@ backgroundImage.src =
 
 
 /* ============================================================
+   GET CURRENT DATE
+   ============================================================ */
+
+function getCurrentDate() {
+
+    const today =
+        new Date();
+
+    return today.toLocaleDateString(
+        "en-US",
+        {
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+
+/* ============================================================
    UPDATE IMAGE
    ============================================================ */
 
 function updateImage() {
 
-
-    /* Don't draw before image loads */
 
     if (
         !backgroundImage.complete ||
@@ -561,7 +563,7 @@ function updateImage() {
 
 
     /* ========================================================
-       GET VALUES
+       GET FORM VALUES
        ======================================================== */
 
     const grade =
@@ -571,8 +573,6 @@ function updateImage() {
     const studentName =
         document.getElementById("studentName").value;
 
-
-    /* Get first name only */
 
     const firstName =
         studentName.trim().split(/\s+/)[0];
@@ -593,11 +593,7 @@ function updateImage() {
        FADED CATEGORY TEXT
        ========================================================
 
-       150px originally.
-
-       Reduced by 20%:
-
-       150 × .80 = 120px
+       100px
 
        ======================================================== */
 
@@ -610,7 +606,7 @@ function updateImage() {
         "middle";
 
     ctx.font =
-        "bold 120px Arial";
+        "bold 100px Arial";
 
     ctx.fillStyle =
         "rgba(120, 120, 120, 0.13)";
@@ -631,25 +627,26 @@ function updateImage() {
        MAIN RECOGNITION MESSAGE
        ======================================================== */
 
-    const mainText =
-        `Days Creek Charter School recognizes ${firstName} in ${grade} in the category of ${selectedCategory}. ${description}`;
+    let mainText =
+        `Days Creek Charter School recognizes ${firstName} in ${grade} in the category of ${selectedCategory}.`;
+
+
+    /*
+       Only add the teacher's description when
+       something has actually been entered.
+    */
+
+    if (description) {
+
+        mainText +=
+            ` ${description}`;
+
+    }
+
 
 
     /* ========================================================
-       PARAGRAPH POSITIONING
-       ========================================================
-
-       Canvas is 800px tall.
-
-       1/4 of 800 = 200px.
-
-       The CENTER of the paragraph is anchored
-       at Y = 200px.
-
-       This means adding more text causes the
-       paragraph to expand upward rather than
-       pushing the whole paragraph downward.
-
+       PARAGRAPH POSITION
        ======================================================== */
 
     const paragraphCenterY =
@@ -666,7 +663,7 @@ function updateImage() {
 
 
     /* ========================================================
-       TEXT STYLE
+       MAIN TEXT STYLE
        ======================================================== */
 
     ctx.save();
@@ -686,7 +683,7 @@ function updateImage() {
 
 
     /* ========================================================
-       WRAP TEXT
+       WRAP PARAGRAPH
        ======================================================== */
 
     const lines =
@@ -699,7 +696,7 @@ function updateImage() {
 
 
     /* ========================================================
-       CALCULATE PARAGRAPH HEIGHT
+       CALCULATE HEIGHT
        ======================================================== */
 
     const totalHeight =
@@ -708,7 +705,7 @@ function updateImage() {
 
 
     /* ========================================================
-       CALCULATE TOP POSITION
+       CENTER PARAGRAPH AT 1/4 POINT
        ======================================================== */
 
     const paragraphTop =
@@ -737,12 +734,53 @@ function updateImage() {
 
     ctx.restore();
 
+
+
+    /* ========================================================
+       DATE STAMP
+       ========================================================
+
+       Small date in bottom-right corner.
+
+       The date is automatically generated from
+       the user's computer date.
+
+       ======================================================== */
+
+    const currentDate =
+        getCurrentDate();
+
+
+    ctx.save();
+
+    ctx.textAlign =
+        "right";
+
+    ctx.textBaseline =
+        "bottom";
+
+    ctx.font =
+        "14px Arial";
+
+    ctx.fillStyle =
+        "rgba(60, 60, 60, 0.65)";
+
+
+    ctx.fillText(
+        currentDate,
+        canvas.width - 25,
+        canvas.height - 20
+    );
+
+
+    ctx.restore();
+
 }
 
 
 
 /* ============================================================
-   GET WRAPPED TEXT LINES
+   WRAP TEXT
    ============================================================ */
 
 function getWrappedLines(
@@ -751,16 +789,12 @@ function getWrappedLines(
     maxWidth
 ) {
 
-
     const words =
         text.split(/\s+/);
 
-
     const lines = [];
 
-
     let line = "";
-
 
 
     for (
@@ -768,7 +802,6 @@ function getWrappedLines(
         i < words.length;
         i++
     ) {
-
 
         const testLine =
             line
@@ -782,22 +815,17 @@ function getWrappedLines(
             ).width;
 
 
-
         if (
             width > maxWidth &&
             line !== ""
         ) {
 
-
             lines.push(line);
-
 
             line =
                 words[i];
 
-
         } else {
-
 
             line =
                 testLine;
@@ -805,7 +833,6 @@ function getWrappedLines(
         }
 
     }
-
 
 
     if (line) {
@@ -826,6 +853,15 @@ function getWrappedLines(
    ============================================================ */
 
 function downloadImage() {
+
+
+    /*
+       Redraw immediately before downloading so the
+       date stamp represents the date the image was
+       actually generated.
+    */
+
+    updateImage();
 
 
     const link =
