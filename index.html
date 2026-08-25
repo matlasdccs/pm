@@ -42,7 +42,6 @@
     }
 
     select,
-    input,
     textarea {
         width: 100%;
         padding: 10px;
@@ -103,9 +102,11 @@
 ```
 <h1>Custom Image Generator for Teachers</h1>
 
+<!-- GRADE -->
 <div class="form-group">
     <label for="grade">1. Select Grade</label>
-    <select id="grade" onchange="updateImage()">
+
+    <select id="grade" onchange="updateStudentList()">
         <option value="Kindergarten">Kindergarten</option>
         <option value="1st Grade">1st Grade</option>
         <option value="2nd Grade">2nd Grade</option>
@@ -113,42 +114,60 @@
     </select>
 </div>
 
+
+<!-- STUDENT -->
 <div class="form-group">
     <label for="studentName">2. Select Student Name</label>
+
     <select id="studentName" onchange="updateImage()">
-        <option value="Alex Smith">Alex Smith</option>
-        <option value="Emma Jones">Emma Jones</option>
-        <option value="Liam Garcia">Liam Garcia</option>
     </select>
 </div>
 
+
+<!-- CATEGORY -->
 <div class="form-group">
     <label for="category">3. Select Category</label>
+
     <select id="category" onchange="updateImage()">
-        <option value="Math Superstar">Math Superstar</option>
-        <option value="Amazing Reader">Amazing Reader</option>
-        <option value="Kindness Award">Kindness Award</option>
+        <option value="Achievements">Achievements</option>
+        <option value="Character">Character</option>
+        <option value="Growth">Growth</option>
+        <option value="Community">Community</option>
     </select>
 </div>
 
+
+<!-- DESCRIPTION -->
 <div class="form-group">
-    <label for="customText">4. Event Description (1-2 sentences)</label>
+    <label for="customText">
+        4. Event Description (1-2 sentences)
+    </label>
+
     <textarea
         id="customText"
-        placeholder="Write something special about the event..."
+        placeholder="Write something special about the student..."
         oninput="updateImage()"
     ></textarea>
 </div>
 
+
+<!-- PREVIEW -->
 <div class="preview-box">
+
     <label>Live Preview:</label>
 
-    <canvas id="imageCanvas" width="800" height="800"></canvas>
+    <canvas
+        id="imageCanvas"
+        width="800"
+        height="800">
+    </canvas>
 
     <div id="imageStatus">
         Loading background image...
     </div>
+
 </div>
+
 
 <button onclick="downloadImage()">
     Download Personalized Image
@@ -159,50 +178,190 @@
 
 <script>
 
-    const canvas = document.getElementById('imageCanvas');
-    const ctx = canvas.getContext('2d');
-    const imageStatus = document.getElementById('imageStatus');
+    /*
+    ============================================================
+    STUDENT DATABASE
+    ============================================================
+
+    Add your students here.
+
+    Each student has:
+        name
+        grade
+
+    Example:
+        { name: "Alex Smith", grade: "Kindergarten" }
+    */
+
+    const students = [
+
+// KINDERGARTEN
+{ name: "Anders", grade: "Kindergarten" },
+{ name: "Aniyah", grade: "Kindergarten" },
+{ name: "Asher", grade: "Kindergarten" },
+{ name: "Brianna", grade: "Kindergarten" },
+{ name: "Brylee", grade: "Kindergarten" },
+{ name: "Jayce", grade: "Kindergarten" },
+{ name: "Jonathan", grade: "Kindergarten" },
+{ name: "Kashton", grade: "Kindergarten" },
+{ name: "Kinzley", grade: "Kindergarten" },
+{ name: "Leon", grade: "Kindergarten" },
+{ name: "Ridge", grade: "Kindergarten" },
+{ name: "Ryelin", grade: "Kindergarten" },
+{ name: "Sarah", grade: "Kindergarten" },
+{ name: "Stetson", grade: "Kindergarten" },
+{ name: "Tilliemae", grade: "Kindergarten" },
+{ name: "Willow", grade: "Kindergarten" },
+
+// 1ST GRADE
+{ name: "Ace", grade: "1st Grade" },
+{ name: "Ammon", grade: "1st Grade" },
+{ name: "Brynlee", grade: "1st Grade" },
+{ name: "Ember", grade: "1st Grade" },
+{ name: "Finnley", grade: "1st Grade" },
+{ name: "Harley", grade: "1st Grade" },
+{ name: "Harper", grade: "1st Grade" },
+{ name: "Joshua", grade: "1st Grade" },
+{ name: "Mallory", grade: "1st Grade" },
+{ name: "Michael", grade: "1st Grade" },
+{ name: "Oliver", grade: "1st Grade" },
+{ name: "Peyton", grade: "1st Grade" },
+{ name: "Ryan", grade: "1st Grade" },
+{ name: "Tancred", grade: "1st Grade" },
+{ name: "Victoria", grade: "1st Grade" },,
+
+        // 2ND GRADE
+        { name: "Mason Miller", grade: "2nd Grade" },
+        { name: "Ava Moore", grade: "2nd Grade" },
+        { name: "Ethan Taylor", grade: "2nd Grade" },
+
+        // 3RD GRADE
+        { name: "Isabella Anderson", grade: "3rd Grade" },
+        { name: "Lucas Thomas", grade: "3rd Grade" },
+        { name: "Mia Jackson", grade: "3rd Grade" }
+
+    ];
+
 
     /*
-     * IMPORTANT:
-     *
-     * Put "Good to Great Background Square.png"
-     * in the SAME FOLDER as this HTML file.
-     *
-     * Example:
-     *
-     * 📁 Teacher Image Generator
-     *    ├── teacher-generator.html
-     *    └── Good to Great Background Square.png
-     */
+    ============================================================
+    UPDATE STUDENT DROPDOWN
+    ============================================================
+    */
 
-    const backgroundImage = new Image();
+    function updateStudentList() {
+
+        const selectedGrade =
+            document.getElementById("grade").value;
+
+        const studentDropdown =
+            document.getElementById("studentName");
+
+
+        // Remove existing students
+        studentDropdown.innerHTML = "";
+
+
+        // Find students in selected grade
+        const matchingStudents =
+            students.filter(
+                student =>
+                    student.grade === selectedGrade
+            );
+
+
+        // Add matching students
+        matchingStudents.forEach(student => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                student.name;
+
+            option.textContent =
+                student.name;
+
+            studentDropdown.appendChild(option);
+
+        });
+
+
+        // Update image
+        updateImage();
+    }
+
+
+    /*
+    ============================================================
+    BACKGROUND IMAGE
+    ============================================================
+    */
+
+    const canvas =
+        document.getElementById("imageCanvas");
+
+    const ctx =
+        canvas.getContext("2d");
+
+    const imageStatus =
+        document.getElementById("imageStatus");
+
+
+    const backgroundImage =
+        new Image();
+
 
     backgroundImage.onload = function () {
-        imageStatus.textContent = "Background image loaded.";
+
+        imageStatus.textContent =
+            "Background image loaded.";
+
         updateImage();
+
     };
 
+
     backgroundImage.onerror = function () {
+
         imageStatus.textContent =
-            "ERROR: Background image could not be found. Make sure the PNG is in the same folder as this HTML file.";
+            "ERROR: Background image could not be found.";
+
         console.error(
             "Could not load: Good to Great Background Square.png"
         );
+
     };
 
-    backgroundImage.src = "Good to Great Background Square.png";
 
+    backgroundImage.src =
+        "Good to Great Background Square.png";
+
+
+    /*
+    ============================================================
+    UPDATE IMAGE
+    ============================================================
+    */
 
     function updateImage() {
 
-        // Don't try to draw the image before it has loaded
-        if (!backgroundImage.complete || backgroundImage.naturalWidth === 0) {
+        if (
+            !backgroundImage.complete ||
+            backgroundImage.naturalWidth === 0
+        ) {
             return;
         }
 
+
         // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
 
         // Draw background
         ctx.drawImage(
@@ -213,12 +372,17 @@
             canvas.height
         );
 
-        // Center all text
+
+        // Center text
         ctx.textAlign = "center";
 
+
         // Grade
-        ctx.font = "bold 24px Arial";
-        ctx.fillStyle = "#222222";
+        ctx.font =
+            "bold 24px Arial";
+
+        ctx.fillStyle =
+            "#222222";
 
         ctx.fillText(
             document.getElementById("grade").value,
@@ -227,9 +391,12 @@
         );
 
 
-        // Student Name
-        ctx.font = "bold 40px Georgia";
-        ctx.fillStyle = "#1a73e8";
+        // Student
+        ctx.font =
+            "bold 40px Georgia";
+
+        ctx.fillStyle =
+            "#1a73e8";
 
         ctx.fillText(
             document.getElementById("studentName").value,
@@ -239,8 +406,11 @@
 
 
         // Category
-        ctx.font = "italic bold 32px Arial";
-        ctx.fillStyle = "#da1b60";
+        ctx.font =
+            "italic bold 32px Arial";
+
+        ctx.fillStyle =
+            "#da1b60";
 
         ctx.fillText(
             document.getElementById("category").value,
@@ -250,11 +420,16 @@
 
 
         // Description
-        ctx.font = "20px Arial";
-        ctx.fillStyle = "#444444";
+        ctx.font =
+            "20px Arial";
+
+        ctx.fillStyle =
+            "#444444";
+
 
         const text =
             document.getElementById("customText").value;
+
 
         wrapText(
             ctx,
@@ -264,21 +439,43 @@
             600,
             28
         );
+
     }
 
 
-    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    /*
+    ============================================================
+    TEXT WRAPPING
+    ============================================================
+    */
 
-        const words = text.split(" ");
+    function wrapText(
+        context,
+        text,
+        x,
+        y,
+        maxWidth,
+        lineHeight
+    ) {
+
+        const words =
+            text.split(" ");
+
         let line = "";
 
-        for (let n = 0; n < words.length; n++) {
+
+        for (
+            let n = 0;
+            n < words.length;
+            n++
+        ) {
 
             const testLine =
                 line + words[n] + " ";
 
             const metrics =
                 context.measureText(testLine);
+
 
             if (
                 metrics.width > maxWidth &&
@@ -298,31 +495,55 @@
 
             } else {
 
-                line = testLine;
+                line =
+                    testLine;
+
             }
+
         }
+
 
         context.fillText(
             line,
             x,
             y
         );
+
     }
 
+
+    /*
+    ============================================================
+    DOWNLOAD
+    ============================================================
+    */
 
     function downloadImage() {
 
         const link =
             document.createElement("a");
 
+
         link.download =
             "Good-to-Great-Student-Award.png";
+
 
         link.href =
             canvas.toDataURL("image/png");
 
+
         link.click();
+
     }
+
+
+    /*
+    ============================================================
+    INITIALIZE
+    ============================================================
+    */
+
+    updateStudentList();
 
 </script>
 
