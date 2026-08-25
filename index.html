@@ -416,8 +416,12 @@ function updateStudentList() {
         document.getElementById("studentName");
 
 
+    /* Clear existing names */
+
     studentDropdown.innerHTML = "";
 
+
+    /* Find students in selected grade */
 
     const matchingStudents =
         students.filter(
@@ -425,6 +429,8 @@ function updateStudentList() {
                 student.grade === selectedGrade
         );
 
+
+    /* Add matching students */
 
     matchingStudents.forEach(student => {
 
@@ -527,6 +533,8 @@ function getCurrentDate() {
 function updateImage() {
 
 
+    /* Don't draw before image loads */
+
     if (
         !backgroundImage.complete ||
         backgroundImage.naturalWidth === 0
@@ -573,6 +581,8 @@ function updateImage() {
     const studentName =
         document.getElementById("studentName").value;
 
+
+    /* Get first name only */
 
     const firstName =
         studentName.trim().split(/\s+/)[0];
@@ -738,13 +748,6 @@ function updateImage() {
 
     /* ========================================================
        DATE STAMP
-       ========================================================
-
-       Small date in bottom-right corner.
-
-       The date is automatically generated from
-       the user's computer date.
-
        ======================================================== */
 
     const currentDate =
@@ -762,8 +765,13 @@ function updateImage() {
     ctx.font =
         "14px Arial";
 
+    /*
+       White timestamp with slight transparency
+       so it remains visible but subtle.
+    */
+
     ctx.fillStyle =
-        "rgba(60, 60, 60, 0.65)";
+        "rgba(255, 255, 255, 0.85)";
 
 
     ctx.fillText(
@@ -854,14 +862,49 @@ function getWrappedLines(
 
 function downloadImage() {
 
-
     /*
-       Redraw immediately before downloading so the
-       date stamp represents the date the image was
-       actually generated.
+       Redraw immediately before downloading so
+       the timestamp reflects the current date.
     */
 
     updateImage();
+
+
+    const studentName =
+        document.getElementById("studentName").value;
+
+
+    const selectedCategory =
+        document.querySelector(
+            'input[name="category"]:checked'
+        ).value;
+
+
+    const currentDate =
+        getCurrentDate();
+
+
+    /*
+       Remove the comma from the date so the
+       filename is clean.
+
+       Example:
+
+       August 25 2026
+    */
+
+    const fileDate =
+        currentDate.replace(/,/g, "");
+
+
+    /*
+       Create filename:
+
+       Student Name - Category - Date.png
+    */
+
+    const fileName =
+        `${studentName} - ${selectedCategory} - ${fileDate}.png`;
 
 
     const link =
@@ -869,7 +912,7 @@ function downloadImage() {
 
 
     link.download =
-        "Days-Creek-Good-to-Great.png";
+        fileName;
 
 
     link.href =
