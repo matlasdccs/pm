@@ -416,12 +416,8 @@ function updateStudentList() {
         document.getElementById("studentName");
 
 
-    /* Clear existing names */
-
     studentDropdown.innerHTML = "";
 
-
-    /* Find students in selected grade */
 
     const matchingStudents =
         students.filter(
@@ -429,8 +425,6 @@ function updateStudentList() {
                 student.grade === selectedGrade
         );
 
-
-    /* Add matching students */
 
     matchingStudents.forEach(student => {
 
@@ -533,8 +527,6 @@ function getCurrentDate() {
 function updateImage() {
 
 
-    /* Don't draw before image loads */
-
     if (
         !backgroundImage.complete ||
         backgroundImage.naturalWidth === 0
@@ -582,8 +574,6 @@ function updateImage() {
         document.getElementById("studentName").value;
 
 
-    /* Get first name only */
-
     const firstName =
         studentName.trim().split(/\s+/)[0];
 
@@ -604,6 +594,8 @@ function updateImage() {
        ========================================================
 
        100px
+       Very light gray
+       Sits behind the main paragraph
 
        ======================================================== */
 
@@ -640,11 +632,6 @@ function updateImage() {
     let mainText =
         `Days Creek Charter School recognizes ${firstName} in ${grade} in the category of ${selectedCategory}.`;
 
-
-    /*
-       Only add the teacher's description when
-       something has actually been entered.
-    */
 
     if (description) {
 
@@ -684,8 +671,26 @@ function updateImage() {
     ctx.textBaseline =
         "top";
 
+
+    /*
+       Black text
+       with a subtle dark-red glow.
+    */
+
     ctx.fillStyle =
-        "#1d2d50";
+        "#000000";
+
+    ctx.shadowColor =
+        "rgba(90, 0, 0, 0.75)";
+
+    ctx.shadowBlur =
+        8;
+
+    ctx.shadowOffsetX =
+        0;
+
+    ctx.shadowOffsetY =
+        0;
 
     ctx.font =
         "bold 25px Arial";
@@ -706,7 +711,7 @@ function updateImage() {
 
 
     /* ========================================================
-       CALCULATE HEIGHT
+       CALCULATE PARAGRAPH HEIGHT
        ======================================================== */
 
     const totalHeight =
@@ -765,9 +770,9 @@ function updateImage() {
     ctx.font =
         "14px Arial";
 
+
     /*
-       White timestamp with slight transparency
-       so it remains visible but subtle.
+       White timestamp with slight transparency.
     */
 
     ctx.fillStyle =
@@ -788,7 +793,7 @@ function updateImage() {
 
 
 /* ============================================================
-   WRAP TEXT
+   GET WRAPPED TEXT LINES
    ============================================================ */
 
 function getWrappedLines(
@@ -862,9 +867,10 @@ function getWrappedLines(
 
 function downloadImage() {
 
+
     /*
-       Redraw immediately before downloading so
-       the timestamp reflects the current date.
+       Redraw immediately before downloading
+       so the date is current.
     */
 
     updateImage();
@@ -885,8 +891,7 @@ function downloadImage() {
 
 
     /*
-       Remove the comma from the date so the
-       filename is clean.
+       Remove comma from filename date.
 
        Example:
 
@@ -898,7 +903,7 @@ function downloadImage() {
 
 
     /*
-       Create filename:
+       Final filename:
 
        Student Name - Category - Date.png
     */
