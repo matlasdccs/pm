@@ -1,549 +1,797 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Image Generator</title>
 
-```
-<style>
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        padding: 20px;
-        background-color: #f5f7fb;
-        color: #333;
-    }
+    <title>Days Creek Good to Great Image Generator</title>
 
-    .container {
-        max-width: 600px;
-        margin: 0 auto;
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    }
+    <style>
 
-    h1 {
-        margin-top: 0;
-        color: #1a73e8;
-        font-size: 24px;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            background-color: #f5f7fb;
+            color: #333;
+        }
 
-    .form-group {
-        margin-bottom: 15px;
-    }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
 
-    label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-        font-size: 14px;
-    }
+        h1 {
+            margin-top: 0;
+            color: #1a73e8;
+            font-size: 24px;
+        }
 
-    select,
-    textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        box-sizing: border-box;
-        font-size: 14px;
-    }
+        .form-group {
+            margin-bottom: 18px;
+        }
 
-    textarea {
-        resize: vertical;
-        height: 80px;
-    }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
 
-    button {
-        background-color: #1a73e8;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 6px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        width: 100%;
-        margin-top: 15px;
-    }
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
 
-    button:hover {
-        background-color: #1557b0;
-    }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
 
-    .preview-box {
-        margin-top: 20px;
-        text-align: center;
-    }
+        /* RADIO BUTTONS */
 
-    canvas {
-        max-width: 100%;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        background-color: #eee;
-    }
+        .radio-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
 
-    #imageStatus {
-        margin-top: 10px;
-        font-size: 13px;
-        color: #777;
-    }
-</style>
-```
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: normal;
+            background-color: #fff;
+            transition: 0.2s;
+        }
+
+        .radio-option:hover {
+            background-color: #f5f7fb;
+        }
+
+        .radio-option input[type="radio"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        /* PREVIEW */
+
+        .preview-box {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .preview-label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        canvas {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #eee;
+        }
+
+        #imageStatus {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #777;
+        }
+
+        /* DOWNLOAD BUTTON */
+
+        button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 18px;
+        }
+
+        button:hover {
+            background-color: #1557b0;
+        }
+
+    </style>
 
 </head>
+
 
 <body>
 
 <div class="container">
 
-```
-<h1>Custom Image Generator for Teachers</h1>
-
-<!-- GRADE -->
-<div class="form-group">
-    <label for="grade">1. Select Grade</label>
-
-    <select id="grade" onchange="updateStudentList()">
-        <option value="Kindergarten">Kindergarten</option>
-        <option value="1st Grade">1st Grade</option>
-        <option value="2nd Grade">2nd Grade</option>
-        <option value="3rd Grade">3rd Grade</option>
-    </select>
-</div>
+    <h1>Days Creek Good to Great Image Generator</h1>
 
 
-<!-- STUDENT -->
-<div class="form-group">
-    <label for="studentName">2. Select Student Name</label>
+    <!-- ========================= -->
+    <!-- GRADE -->
+    <!-- ========================= -->
 
-    <select id="studentName" onchange="updateImage()">
-    </select>
-</div>
+    <div class="form-group">
 
+        <label for="grade">
+            1. Select Grade
+        </label>
 
-<!-- CATEGORY -->
-<div class="form-group">
-    <label for="category">3. Select Category</label>
+        <select
+            id="grade"
+            onchange="updateStudentList()"
+        >
 
-    <select id="category" onchange="updateImage()">
-        <option value="Achievements">Achievements</option>
-        <option value="Character">Character</option>
-        <option value="Growth">Growth</option>
-        <option value="Community">Community</option>
-    </select>
-</div>
+            <option value="Kindergarten">
+                Kindergarten
+            </option>
 
+            <option value="1st Grade">
+                1st Grade
+            </option>
 
-<!-- DESCRIPTION -->
-<div class="form-group">
-    <label for="customText">
-        4. Event Description (1-2 sentences)
-    </label>
+            <option value="2nd Grade">
+                2nd Grade
+            </option>
 
-    <textarea
-        id="customText"
-        placeholder="Write something special about the student..."
-        oninput="updateImage()"
-    ></textarea>
-</div>
+            <option value="3rd Grade">
+                3rd Grade
+            </option>
 
+        </select>
 
-<!-- PREVIEW -->
-<div class="preview-box">
-
-    <label>Live Preview:</label>
-
-    <canvas
-        id="imageCanvas"
-        width="800"
-        height="800">
-    </canvas>
-
-    <div id="imageStatus">
-        Loading background image...
     </div>
 
+
+    <!-- ========================= -->
+    <!-- STUDENT -->
+    <!-- ========================= -->
+
+    <div class="form-group">
+
+        <label for="studentName">
+            2. Select Student Name
+        </label>
+
+        <select
+            id="studentName"
+            onchange="updateImage()"
+        >
+        </select>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- CATEGORY -->
+    <!-- ========================= -->
+
+    <div class="form-group">
+
+        <label>
+            3. Select Recognition Area
+        </label>
+
+
+        <div class="radio-group">
+
+            <label class="radio-option">
+
+                <input
+                    type="radio"
+                    name="category"
+                    value="Achievements"
+                    checked
+                    onchange="updateImage()"
+                >
+
+                Achievements
+
+            </label>
+
+
+            <label class="radio-option">
+
+                <input
+                    type="radio"
+                    name="category"
+                    value="Character"
+                    onchange="updateImage()"
+                >
+
+                Character
+
+            </label>
+
+
+            <label class="radio-option">
+
+                <input
+                    type="radio"
+                    name="category"
+                    value="Growth"
+                    onchange="updateImage()"
+                >
+
+                Growth
+
+            </label>
+
+
+            <label class="radio-option">
+
+                <input
+                    type="radio"
+                    name="category"
+                    value="Community"
+                    onchange="updateImage()"
+                >
+
+                Community
+
+            </label>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- DESCRIPTION -->
+    <!-- ========================= -->
+
+    <div class="form-group">
+
+        <label for="customText">
+            Describe what they did to get this recognition:
+        </label>
+
+
+        <textarea
+            id="customText"
+            placeholder="Describe what the student did to earn this recognition..."
+            oninput="updateImage()"
+        ></textarea>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- LIVE PREVIEW -->
+    <!-- ========================= -->
+
+    <div class="preview-box">
+
+        <label class="preview-label">
+            Live Preview:
+        </label>
+
+
+        <canvas
+            id="imageCanvas"
+            width="800"
+            height="800"
+        ></canvas>
+
+
+        <div id="imageStatus">
+            Loading background image...
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- DOWNLOAD -->
+    <!-- ========================= -->
+
+    <button onclick="downloadImage()">
+        Download Personalized Image
+    </button>
+
 </div>
 
 
-<button onclick="downloadImage()">
-    Download Personalized Image
-</button>
-```
-
-</div>
 
 <script>
 
-    /*
-    ============================================================
-    STUDENT DATABASE
-    ============================================================
 
-    Add your students here.
+/* ============================================================
+   STUDENT DATABASE
+   ============================================================
 
-    Each student has:
-        name
-        grade
+   Add additional students using this format:
 
-    Example:
-        { name: "Alex Smith", grade: "Kindergarten" }
-    */
+   { name: "Student Name", grade: "2nd Grade" },
 
-    const students = [
-
-// KINDERGARTEN
-{ name: "Anders", grade: "Kindergarten" },
-{ name: "Aniyah", grade: "Kindergarten" },
-{ name: "Asher", grade: "Kindergarten" },
-{ name: "Brianna", grade: "Kindergarten" },
-{ name: "Brylee", grade: "Kindergarten" },
-{ name: "Jayce", grade: "Kindergarten" },
-{ name: "Jonathan", grade: "Kindergarten" },
-{ name: "Kashton", grade: "Kindergarten" },
-{ name: "Kinzley", grade: "Kindergarten" },
-{ name: "Leon", grade: "Kindergarten" },
-{ name: "Ridge", grade: "Kindergarten" },
-{ name: "Ryelin", grade: "Kindergarten" },
-{ name: "Sarah", grade: "Kindergarten" },
-{ name: "Stetson", grade: "Kindergarten" },
-{ name: "Tilliemae", grade: "Kindergarten" },
-{ name: "Willow", grade: "Kindergarten" },
-
-// 1ST GRADE
-{ name: "Ace", grade: "1st Grade" },
-{ name: "Ammon", grade: "1st Grade" },
-{ name: "Brynlee", grade: "1st Grade" },
-{ name: "Ember", grade: "1st Grade" },
-{ name: "Finnley", grade: "1st Grade" },
-{ name: "Harley", grade: "1st Grade" },
-{ name: "Harper", grade: "1st Grade" },
-{ name: "Joshua", grade: "1st Grade" },
-{ name: "Mallory", grade: "1st Grade" },
-{ name: "Michael", grade: "1st Grade" },
-{ name: "Oliver", grade: "1st Grade" },
-{ name: "Peyton", grade: "1st Grade" },
-{ name: "Ryan", grade: "1st Grade" },
-{ name: "Tancred", grade: "1st Grade" },
-{ name: "Victoria", grade: "1st Grade" },,
-
-        // 2ND GRADE
-        { name: "Mason Miller", grade: "2nd Grade" },
-        { name: "Ava Moore", grade: "2nd Grade" },
-        { name: "Ethan Taylor", grade: "2nd Grade" },
-
-        // 3RD GRADE
-        { name: "Isabella Anderson", grade: "3rd Grade" },
-        { name: "Lucas Thomas", grade: "3rd Grade" },
-        { name: "Mia Jackson", grade: "3rd Grade" }
-
-    ];
+   ============================================================ */
 
 
-    /*
-    ============================================================
-    UPDATE STUDENT DROPDOWN
-    ============================================================
-    */
-
-    function updateStudentList() {
-
-        const selectedGrade =
-            document.getElementById("grade").value;
-
-        const studentDropdown =
-            document.getElementById("studentName");
+const students = [
 
 
-        // Remove existing students
-        studentDropdown.innerHTML = "";
+    /* =========================
+       KINDERGARTEN
+       ========================= */
+
+    { name: "Anders", grade: "Kindergarten" },
+    { name: "Aniyah", grade: "Kindergarten" },
+    { name: "Asher", grade: "Kindergarten" },
+    { name: "Brianna", grade: "Kindergarten" },
+    { name: "Brylee", grade: "Kindergarten" },
+    { name: "Jayce", grade: "Kindergarten" },
+    { name: "Jonathan", grade: "Kindergarten" },
+    { name: "Kashton", grade: "Kindergarten" },
+    { name: "Kinzley", grade: "Kindergarten" },
+    { name: "Leon", grade: "Kindergarten" },
+    { name: "Ridge", grade: "Kindergarten" },
+    { name: "Ryelin", grade: "Kindergarten" },
+    { name: "Sarah", grade: "Kindergarten" },
+    { name: "Stetson", grade: "Kindergarten" },
+    { name: "Tilliemae", grade: "Kindergarten" },
+    { name: "Willow", grade: "Kindergarten" },
 
 
-        // Find students in selected grade
-        const matchingStudents =
-            students.filter(
-                student =>
-                    student.grade === selectedGrade
+    /* =========================
+       1ST GRADE
+       ========================= */
+
+    { name: "Ace", grade: "1st Grade" },
+    { name: "Ammon", grade: "1st Grade" },
+    { name: "Brynlee", grade: "1st Grade" },
+    { name: "Ember", grade: "1st Grade" },
+    { name: "Finnley", grade: "1st Grade" },
+    { name: "Harley", grade: "1st Grade" },
+    { name: "Harper", grade: "1st Grade" },
+    { name: "Joshua", grade: "1st Grade" },
+    { name: "Mallory", grade: "1st Grade" },
+    { name: "Michael", grade: "1st Grade" },
+    { name: "Oliver", grade: "1st Grade" },
+    { name: "Peyton", grade: "1st Grade" },
+    { name: "Ryan", grade: "1st Grade" },
+    { name: "Tancred", grade: "1st Grade" },
+    { name: "Victoria", grade: "1st Grade" },
+
+
+    /* =========================
+       2ND GRADE
+       ========================= */
+
+    // Add 2nd grade students here
+
+
+    /* =========================
+       3RD GRADE
+       ========================= */
+
+    // Add 3rd grade students here
+
+];
+
+
+
+/* ============================================================
+   UPDATE STUDENT DROPDOWN
+   ============================================================ */
+
+
+function updateStudentList() {
+
+
+    const selectedGrade =
+        document.getElementById("grade").value;
+
+
+    const studentDropdown =
+        document.getElementById("studentName");
+
+
+    // Remove existing students
+
+    studentDropdown.innerHTML = "";
+
+
+    // Find students matching selected grade
+
+    const matchingStudents =
+        students.filter(
+            student =>
+                student.grade === selectedGrade
+        );
+
+
+    // Add matching students
+
+    matchingStudents.forEach(student => {
+
+
+        const option =
+            document.createElement("option");
+
+
+        option.value =
+            student.name;
+
+
+        option.textContent =
+            student.name;
+
+
+        studentDropdown.appendChild(option);
+
+    });
+
+
+    // Update preview
+
+    updateImage();
+
+}
+
+
+
+/* ============================================================
+   CANVAS
+   ============================================================ */
+
+
+const canvas =
+    document.getElementById("imageCanvas");
+
+
+const ctx =
+    canvas.getContext("2d");
+
+
+const imageStatus =
+    document.getElementById("imageStatus");
+
+
+
+/* ============================================================
+   BACKGROUND IMAGE
+   ============================================================
+
+   IMPORTANT:
+
+   Place this PNG in the SAME folder as this HTML file:
+
+   Good to Great Background Square.png
+
+   ============================================================ */
+
+
+const backgroundImage =
+    new Image();
+
+
+backgroundImage.onload = function () {
+
+    imageStatus.textContent =
+        "Background image loaded.";
+
+    updateImage();
+
+};
+
+
+backgroundImage.onerror = function () {
+
+    imageStatus.textContent =
+        "ERROR: Background image could not be found. Make sure 'Good to Great Background Square.png' is in the same folder as this HTML file.";
+
+    console.error(
+        "Could not load: Good to Great Background Square.png"
+    );
+
+};
+
+
+backgroundImage.src =
+    "Good to Great Background Square.png";
+
+
+
+/* ============================================================
+   UPDATE IMAGE
+   ============================================================ */
+
+
+function updateImage() {
+
+
+    // Don't draw until background has loaded
+
+    if (
+        !backgroundImage.complete ||
+        backgroundImage.naturalWidth === 0
+    ) {
+
+        return;
+
+    }
+
+
+    // Clear canvas
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    // Draw background
+
+    ctx.drawImage(
+        backgroundImage,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    // Center text
+
+    ctx.textAlign =
+        "center";
+
+
+
+    /* =========================
+       GRADE
+       ========================= */
+
+    ctx.font =
+        "bold 24px Arial";
+
+    ctx.fillStyle =
+        "#222222";
+
+
+    ctx.fillText(
+        document.getElementById("grade").value,
+        400,
+        120
+    );
+
+
+
+    /* =========================
+       STUDENT NAME
+       ========================= */
+
+    ctx.font =
+        "bold 40px Georgia";
+
+    ctx.fillStyle =
+        "#1a73e8";
+
+
+    ctx.fillText(
+        document.getElementById("studentName").value,
+        400,
+        220
+    );
+
+
+
+    /* =========================
+       CATEGORY
+       ========================= */
+
+
+    const selectedCategory =
+        document.querySelector(
+            'input[name="category"]:checked'
+        ).value;
+
+
+    ctx.font =
+        "italic bold 32px Arial";
+
+    ctx.fillStyle =
+        "#da1b60";
+
+
+    ctx.fillText(
+        selectedCategory,
+        400,
+        320
+    );
+
+
+
+    /* =========================
+       DESCRIPTION
+       ========================= */
+
+
+    ctx.font =
+        "20px Arial";
+
+    ctx.fillStyle =
+        "#444444";
+
+
+    const text =
+        document.getElementById("customText").value;
+
+
+    wrapText(
+        ctx,
+        text,
+        400,
+        420,
+        600,
+        28
+    );
+
+}
+
+
+
+/* ============================================================
+   TEXT WRAPPING
+   ============================================================ */
+
+
+function wrapText(
+    context,
+    text,
+    x,
+    y,
+    maxWidth,
+    lineHeight
+) {
+
+
+    const words =
+        text.split(" ");
+
+
+    let line =
+        "";
+
+
+    for (
+        let n = 0;
+        n < words.length;
+        n++
+    ) {
+
+
+        const testLine =
+            line +
+            words[n] +
+            " ";
+
+
+        const metrics =
+            context.measureText(
+                testLine
             );
 
 
-        // Add matching students
-        matchingStudents.forEach(student => {
-
-            const option =
-                document.createElement("option");
-
-            option.value =
-                student.name;
-
-            option.textContent =
-                student.name;
-
-            studentDropdown.appendChild(option);
-
-        });
-
-
-        // Update image
-        updateImage();
-    }
-
-
-    /*
-    ============================================================
-    BACKGROUND IMAGE
-    ============================================================
-    */
-
-    const canvas =
-        document.getElementById("imageCanvas");
-
-    const ctx =
-        canvas.getContext("2d");
-
-    const imageStatus =
-        document.getElementById("imageStatus");
-
-
-    const backgroundImage =
-        new Image();
-
-
-    backgroundImage.onload = function () {
-
-        imageStatus.textContent =
-            "Background image loaded.";
-
-        updateImage();
-
-    };
-
-
-    backgroundImage.onerror = function () {
-
-        imageStatus.textContent =
-            "ERROR: Background image could not be found.";
-
-        console.error(
-            "Could not load: Good to Great Background Square.png"
-        );
-
-    };
-
-
-    backgroundImage.src =
-        "Good to Great Background Square.png";
-
-
-    /*
-    ============================================================
-    UPDATE IMAGE
-    ============================================================
-    */
-
-    function updateImage() {
-
         if (
-            !backgroundImage.complete ||
-            backgroundImage.naturalWidth === 0
+            metrics.width > maxWidth &&
+            n > 0
         ) {
-            return;
+
+
+            context.fillText(
+                line,
+                x,
+                y
+            );
+
+
+            line =
+                words[n] +
+                " ";
+
+
+            y +=
+                lineHeight;
+
+
+        } else {
+
+
+            line =
+                testLine;
+
         }
-
-
-        // Clear canvas
-        ctx.clearRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-
-        // Draw background
-        ctx.drawImage(
-            backgroundImage,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-
-        // Center text
-        ctx.textAlign = "center";
-
-
-        // Grade
-        ctx.font =
-            "bold 24px Arial";
-
-        ctx.fillStyle =
-            "#222222";
-
-        ctx.fillText(
-            document.getElementById("grade").value,
-            400,
-            120
-        );
-
-
-        // Student
-        ctx.font =
-            "bold 40px Georgia";
-
-        ctx.fillStyle =
-            "#1a73e8";
-
-        ctx.fillText(
-            document.getElementById("studentName").value,
-            400,
-            220
-        );
-
-
-        // Category
-        ctx.font =
-            "italic bold 32px Arial";
-
-        ctx.fillStyle =
-            "#da1b60";
-
-        ctx.fillText(
-            document.getElementById("category").value,
-            400,
-            320
-        );
-
-
-        // Description
-        ctx.font =
-            "20px Arial";
-
-        ctx.fillStyle =
-            "#444444";
-
-
-        const text =
-            document.getElementById("customText").value;
-
-
-        wrapText(
-            ctx,
-            text,
-            400,
-            420,
-            600,
-            28
-        );
 
     }
 
 
-    /*
-    ============================================================
-    TEXT WRAPPING
-    ============================================================
-    */
-
-    function wrapText(
-        context,
-        text,
+    context.fillText(
+        line,
         x,
-        y,
-        maxWidth,
-        lineHeight
-    ) {
+        y
+    );
 
-        const words =
-            text.split(" ");
-
-        let line = "";
+}
 
 
-        for (
-            let n = 0;
-            n < words.length;
-            n++
-        ) {
 
-            const testLine =
-                line + words[n] + " ";
-
-            const metrics =
-                context.measureText(testLine);
+/* ============================================================
+   DOWNLOAD IMAGE
+   ============================================================ */
 
 
-            if (
-                metrics.width > maxWidth &&
-                n > 0
-            ) {
-
-                context.fillText(
-                    line,
-                    x,
-                    y
-                );
-
-                line =
-                    words[n] + " ";
-
-                y += lineHeight;
-
-            } else {
-
-                line =
-                    testLine;
-
-            }
-
-        }
+function downloadImage() {
 
 
-        context.fillText(
-            line,
-            x,
-            y
+    const link =
+        document.createElement("a");
+
+
+    link.download =
+        "Days-Creek-Good-to-Great.png";
+
+
+    link.href =
+        canvas.toDataURL(
+            "image/png"
         );
 
-    }
+
+    link.click();
+
+}
 
 
-    /*
-    ============================================================
-    DOWNLOAD
-    ============================================================
-    */
 
-    function downloadImage() {
-
-        const link =
-            document.createElement("a");
+/* ============================================================
+   INITIALIZE
+   ============================================================ */
 
 
-        link.download =
-            "Good-to-Great-Student-Award.png";
+updateStudentList();
 
-
-        link.href =
-            canvas.toDataURL("image/png");
-
-
-        link.click();
-
-    }
-
-
-    /*
-    ============================================================
-    INITIALIZE
-    ============================================================
-    */
-
-    updateStudentList();
 
 </script>
 
