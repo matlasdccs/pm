@@ -1,780 +1,114 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Days Creek Good to Great Image Generator</title>
-
-    <style>
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            padding: 20px;
-            background-color: #f5f7fb;
-            color: #333;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        h1 {
-            margin-top: 0;
-            color: #1a73e8;
-            font-size: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 6px;
-            font-size: 14px;
-        }
-
-        select,
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        textarea {
-            resize: vertical;
-            height: 100px;
-        }
-
-        /* RADIO BUTTONS */
-
-        .radio-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: normal;
-            background-color: #fff;
-            transition: 0.2s;
-        }
-
-        .radio-option:hover {
-            background-color: #f5f7fb;
-        }
-
-        .radio-option input[type="radio"] {
-            width: auto;
-            margin: 0;
-            cursor: pointer;
-        }
-
-        /* PREVIEW */
-
-        .preview-box {
-            margin-top: 25px;
-            text-align: center;
-        }
-
-        .preview-label {
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        canvas {
-            width: 100%;
-            max-width: 600px;
-            height: auto;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background-color: #eee;
-        }
-
-        #imageStatus {
-            margin-top: 10px;
-            font-size: 13px;
-            color: #777;
-        }
-
-        /* DOWNLOAD BUTTON */
-
-        button {
-            background-color: #1a73e8;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 18px;
-        }
-
-        button:hover {
-            background-color: #1557b0;
-        }
-
-    </style>
-
-</head>
-
-
-<body>
-
-<div class="container">
-
-    <h1>Days Creek Good to Great Image Generator</h1>
-
-
-    <!-- ========================= -->
-    <!-- GRADE -->
-    <!-- ========================= -->
-
-    <div class="form-group">
-
-        <label for="grade">
-            1. Select Grade
-        </label>
-
-        <select
-            id="grade"
-            onchange="updateStudentList()"
-        >
-
-            <option value="Kindergarten">
-                Kindergarten
-            </option>
-
-            <option value="1st Grade">
-                1st Grade
-            </option>
-
-            <option value="2nd Grade">
-                2nd Grade
-            </option>
-
-            <option value="3rd Grade">
-                3rd Grade
-            </option>
-
-        </select>
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- STUDENT -->
-    <!-- ========================= -->
-
-    <div class="form-group">
-
-        <label for="studentName">
-            2. Select Student Name
-        </label>
-
-        <select
-            id="studentName"
-            onchange="updateImage()"
-        >
-        </select>
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- CATEGORY -->
-    <!-- ========================= -->
-
-    <div class="form-group">
-
-        <label>
-            3. Select Recognition Area
-        </label>
-
-
-        <div class="radio-group">
-
-            <label class="radio-option">
-
-                <input
-                    type="radio"
-                    name="category"
-                    value="Achievements"
-                    checked
-                    onchange="updateImage()"
-                >
-
-                Achievements
-
-            </label>
-
-
-            <label class="radio-option">
-
-                <input
-                    type="radio"
-                    name="category"
-                    value="Character"
-                    onchange="updateImage()"
-                >
-
-                Character
-
-            </label>
-
-
-            <label class="radio-option">
-
-                <input
-                    type="radio"
-                    name="category"
-                    value="Growth"
-                    onchange="updateImage()"
-                >
-
-                Growth
-
-            </label>
-
-
-            <label class="radio-option">
-
-                <input
-                    type="radio"
-                    name="category"
-                    value="Community"
-                    onchange="updateImage()"
-                >
-
-                Community
-
-            </label>
-
-        </div>
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- DESCRIPTION -->
-    <!-- ========================= -->
-
-    <div class="form-group">
-
-        <label for="customText">
-            Describe what they did to get this recognition:
-        </label>
-
-
-        <textarea
-            id="customText"
-            placeholder="Describe what the student did to earn this recognition..."
-            oninput="updateImage()"
-        ></textarea>
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- LIVE PREVIEW -->
-    <!-- ========================= -->
-
-    <div class="preview-box">
-
-        <label class="preview-label">
-            Live Preview:
-        </label>
-
-
-        <canvas
-            id="imageCanvas"
-            width="800"
-            height="800"
-        ></canvas>
-
-
-        <div id="imageStatus">
-            Loading background image...
-        </div>
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- DOWNLOAD -->
-    <!-- ========================= -->
-
-    <button onclick="downloadImage()">
-        Download Personalized Image
-    </button>
-
-</div>
-
-
-
-<script>
-
-
 /* ============================================================
-   STUDENT DATABASE
+   FADED CATEGORY BACKGROUND
    ============================================================ */
 
+ctx.save();
 
-const students = [
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
 
-    /* =========================
-       KINDERGARTEN
-       ========================= */
+/*
+   Category is 20% smaller than before:
+   150px → 120px
+*/
 
-    { name: "Anders", grade: "Kindergarten" },
-    { name: "Aniyah", grade: "Kindergarten" },
-    { name: "Asher", grade: "Kindergarten" },
-    { name: "Brianna", grade: "Kindergarten" },
-    { name: "Brylee", grade: "Kindergarten" },
-    { name: "Jayce", grade: "Kindergarten" },
-    { name: "Jonathan", grade: "Kindergarten" },
-    { name: "Kashton", grade: "Kindergarten" },
-    { name: "Kinzley", grade: "Kindergarten" },
-    { name: "Leon", grade: "Kindergarten" },
-    { name: "Ridge", grade: "Kindergarten" },
-    { name: "Ryelin", grade: "Kindergarten" },
-    { name: "Sarah", grade: "Kindergarten" },
-    { name: "Stetson", grade: "Kindergarten" },
-    { name: "Tilliemae", grade: "Kindergarten" },
-    { name: "Willow", grade: "Kindergarten" },
+ctx.font = "bold 120px Arial";
 
+ctx.fillStyle = "rgba(120, 120, 120, 0.13)";
 
-    /* =========================
-       1ST GRADE
-       ========================= */
+ctx.fillText(
+    selectedCategory.toUpperCase(),
+    400,
+    215
+);
 
-    { name: "Ace", grade: "1st Grade" },
-    { name: "Ammon", grade: "1st Grade" },
-    { name: "Brynlee", grade: "1st Grade" },
-    { name: "Ember", grade: "1st Grade" },
-    { name: "Finnley", grade: "1st Grade" },
-    { name: "Harley", grade: "1st Grade" },
-    { name: "Harper", grade: "1st Grade" },
-    { name: "Joshua", grade: "1st Grade" },
-    { name: "Mallory", grade: "1st Grade" },
-    { name: "Michael", grade: "1st Grade" },
-    { name: "Oliver", grade: "1st Grade" },
-    { name: "Peyton", grade: "1st Grade" },
-    { name: "Ryan", grade: "1st Grade" },
-    { name: "Tancred", grade: "1st Grade" },
-    { name: "Victoria", grade: "1st Grade" },
-
-
-    /* =========================
-       2ND GRADE
-       ========================= */
-
-    // Add 2nd grade students here
-
-
-    /* =========================
-       3RD GRADE
-       ========================= */
-
-    // Add 3rd grade students here
-
-];
+ctx.restore();
 
 
 
 /* ============================================================
-   UPDATE STUDENT DROPDOWN
+   MAIN RECOGNITION PARAGRAPH
    ============================================================ */
 
-
-function updateStudentList() {
-
-    const selectedGrade =
-        document.getElementById("grade").value;
-
-    const studentDropdown =
-        document.getElementById("studentName");
-
-    studentDropdown.innerHTML = "";
+const mainText =
+    `Days Creek Charter School recognizes ${firstName} in ${grade} in the category of ${selectedCategory}. ${description}`;
 
 
-    const matchingStudents =
-        students.filter(
-            student =>
-                student.grade === selectedGrade
+/*
+   The CENTER of the paragraph is anchored at
+   1/4 of the image height.
+
+   Canvas = 800px
+   1/4 = 200px
+*/
+
+const paragraphCenterY = canvas.height * 0.25;
+
+const maxWidth = 650;
+
+const lineHeight = 34;
+
+
+ctx.save();
+
+ctx.textAlign = "center";
+ctx.textBaseline = "top";
+
+ctx.fillStyle = "#1d2d50";
+
+ctx.font = "bold 25px Arial";
+
+
+/*
+   Wrap the paragraph first so we know
+   exactly how many lines it contains.
+*/
+
+const lines = getWrappedLines(
+    ctx,
+    mainText,
+    maxWidth
+);
+
+
+/*
+   Calculate total height of the paragraph.
+
+   Example:
+   3 lines × 34px = 102px
+*/
+
+const totalHeight =
+    lines.length * lineHeight;
+
+
+/*
+   Instead of starting at 200px, position the
+   TOP of the paragraph so that its CENTER is
+   exactly at 200px.
+
+   This means longer descriptions automatically
+   move upward.
+*/
+
+const paragraphTop =
+    paragraphCenterY - (totalHeight / 2);
+
+
+/*
+   Draw each line.
+*/
+
+lines.forEach(
+    (lineText, index) => {
+
+        ctx.fillText(
+            lineText,
+            400,
+            paragraphTop + (index * lineHeight)
         );
 
-
-    matchingStudents.forEach(student => {
-
-        const option =
-            document.createElement("option");
-
-        option.value =
-            student.name;
-
-        option.textContent =
-            student.name;
-
-        studentDropdown.appendChild(option);
-
-    });
-
-
-    updateImage();
-
-}
-
-
-
-/* ============================================================
-   CANVAS
-   ============================================================ */
-
-
-const canvas =
-    document.getElementById("imageCanvas");
-
-const ctx =
-    canvas.getContext("2d");
-
-const imageStatus =
-    document.getElementById("imageStatus");
-
-
-
-/* ============================================================
-   BACKGROUND IMAGE
-   ============================================================ */
-
-
-const backgroundImage =
-    new Image();
-
-
-backgroundImage.onload = function () {
-
-    imageStatus.textContent =
-        "Background image loaded.";
-
-    updateImage();
-
-};
-
-
-backgroundImage.onerror = function () {
-
-    imageStatus.textContent =
-        "ERROR: Background image could not be found. Make sure 'Good to Great Background Square.png' is in the same folder as this HTML file.";
-
-    console.error(
-        "Could not load: Good to Great Background Square.png"
-    );
-
-};
-
-
-backgroundImage.src =
-    "Good to Great Background Square.png";
-
-
-
-/* ============================================================
-   UPDATE IMAGE
-   ============================================================ */
-
-
-function updateImage() {
-
-    if (
-        !backgroundImage.complete ||
-        backgroundImage.naturalWidth === 0
-    ) {
-        return;
     }
+);
 
-
-    /* =========================
-       CLEAR CANVAS
-       ========================= */
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    /* =========================
-       DRAW BACKGROUND
-       ========================= */
-
-    ctx.drawImage(
-        backgroundImage,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-
-    /* =========================
-       GET FORM VALUES
-       ========================= */
-
-    const grade =
-        document.getElementById("grade").value;
-
-
-    const studentName =
-        document.getElementById("studentName").value;
-
-
-    const firstName =
-        studentName.trim().split(" ")[0];
-
-
-    const selectedCategory =
-        document.querySelector(
-            'input[name="category"]:checked'
-        ).value;
-
-
-    const description =
-        document.getElementById("customText").value.trim();
-
-
-
-    /* ========================================================
-       FADED CATEGORY BACKGROUND
-       ========================================================
-
-       This sits behind the paragraph.
-
-       It is:
-       - ALL CAPS
-       - Very large
-       - Light gray
-       - Faded
-       ======================================================== */
-
-
-    ctx.save();
-
-    ctx.textAlign = "center";
-
-    ctx.font =
-        "bold 150px Arial";
-
-    ctx.fillStyle =
-        "rgba(120, 120, 120, 0.13)";
-
-    ctx.fillText(
-        selectedCategory.toUpperCase(),
-        400,
-        215
-    );
-
-    ctx.restore();
-
-
-
-    /* ========================================================
-       MAIN RECOGNITION PARAGRAPH
-       ======================================================== */
-
-
-    const mainText =
-        `Days Creek Charter School recognizes ${firstName} in ${grade} in the category of ${selectedCategory}. ${description}`;
-
-
-    /*
-       The paragraph is centered around this area.
-
-       The top of the text is approximately
-       1/4 of the way down the 800px image.
-    */
-
-    const startY = 205;
-
-    const maxWidth = 650;
-
-    const lineHeight = 34;
-
-
-    ctx.save();
-
-    ctx.textAlign = "center";
-
-    ctx.textBaseline = "top";
-
-    ctx.fillStyle =
-        "#1d2d50";
-
-    ctx.font =
-        "bold 25px Arial";
-
-
-    /*
-       Wrap the entire message as one paragraph.
-    */
-
-    wrapParagraph(
-        ctx,
-        mainText,
-        400,
-        startY,
-        maxWidth,
-        lineHeight
-    );
-
-
-    ctx.restore();
-
-}
-
-
-
-/* ============================================================
-   PARAGRAPH WRAPPING
-   ============================================================ */
-
-
-function wrapParagraph(
-    context,
-    text,
-    x,
-    y,
-    maxWidth,
-    lineHeight
-) {
-
-    const words =
-        text.split(/\s+/);
-
-    let line = "";
-
-    const lines = [];
-
-
-    for (
-        let i = 0;
-        i < words.length;
-        i++
-    ) {
-
-        const testLine =
-            line
-            ? line + " " + words[i]
-            : words[i];
-
-
-        const width =
-            context.measureText(testLine).width;
-
-
-        if (
-            width > maxWidth &&
-            line !== ""
-        ) {
-
-            lines.push(line);
-
-            line =
-                words[i];
-
-        } else {
-
-            line =
-                testLine;
-
-        }
-
-    }
-
-
-    if (line) {
-        lines.push(line);
-    }
-
-
-    /*
-       Draw each line centered.
-    */
-
-    lines.forEach(
-        (lineText, index) => {
-
-            context.fillText(
-                lineText,
-                x,
-                y + (index * lineHeight)
-            );
-
-        }
-    );
-
-}
-
-
-
-/* ============================================================
-   DOWNLOAD IMAGE
-   ============================================================ */
-
-
-function downloadImage() {
-
-    const link =
-        document.createElement("a");
-
-
-    link.download =
-        "Days-Creek-Good-to-Great.png";
-
-
-    link.href =
-        canvas.toDataURL(
-            "image/png"
-        );
-
-
-    link.click();
-
-}
-
-
-
-/* ============================================================
-   INITIALIZE
-   ============================================================ */
-
-
-updateStudentList();
-
-
-</script>
-
-</body>
-</html>
+ctx.restore();
