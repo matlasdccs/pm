@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Image Generator</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; background-color: #f5f7fb; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { margin-top: 0; color: #1a73e8; font-size: 24px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
+        select, input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        textarea { resize: vertical; height: 80px; }
+        button { background-color: #1a73e8; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; }
+        button:hover { background-color: #1557b0; }
+        .preview-box { margin-top: 20px; text-align: center; }
+        canvas { max-width: 100%; border: 1px solid #ddd; border-radius: 6px; background-color: #eee; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Custom Image Generator for Teachers</h1>
+    
+    <!-- Form Inputs -->
+    <div class="form-group">
+        <label for="grade">1. Select Grade</label>
+        <select id="grade" onchange="updateImage()">
+            <option value="Kindergarten">Kindergarten</option>
+            <option value="1st Grade">1st Grade</option>
+            <option value="2nd Grade">2nd Grade</option>
+            <option value="3rd Grade">3rd Grade</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="studentName">2. Select Student Name</label>
+        <select id="studentName" onchange="updateImage()">
+            <option value="Alex Smith">Alex Smith</option>
+            <option value="Emma Jones">Emma Jones</option>
+            <option value="Liam Garcia">Liam Garcia</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="category">3. Select Category</label>
+        <select id="category" onchange="updateImage()">
+            <option value="Math Superstar">Math Superstar</option>
+            <option value="Amazing Reader">Amazing Reader</option>
+            <option value="Kindness Award">Kindness Award</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="customText">4. Event Description (1-2 sentences)</label>
+        <textarea id="customText" placeholder="Write something special about the event..." oninput="updateImage()"></textarea>
+    </div>
+
+    <!-- Live Preview -->
+    <div class="preview-box">
+        <label>Live Preview:</label>
+        <canvas id="imageCanvas" width="800" height="600"></canvas>
+    </div>
+
+    <button onclick="downloadImage()">Download Personalized Image</button>
+</div>
+
+<script>
+    const canvas = document.getElementById('imageCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 1. CHOOSE YOUR BACKGROUND IMAGE
+    // Replace this placeholder link with your actual template image URL or file path!
+    const backgroundImage = new Image();
+    backgroundImage.crossOrigin = "anonymous"; 
+    backgroundImage.src = 'https://picsum.photos'; // Temporary nice background
+
+    // Redraw whenever the image loads or text changes
+    backgroundImage.onload = updateImage;
+
+    function updateImage() {
+        // Draw base template
+        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+        
+        // Setup text styles
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#222222'; // Font Color
+        
+        // Draw Grade
+        ctx.font = 'bold 24px Arial';
+        ctx.fillText(document.getElementById('grade').value, 400, 120);
+        
+        // Draw Student Name
+        ctx.font = 'bold 40px Georgia';
+        ctx.fillStyle = '#1a73e8'; // Accent color for name
+        ctx.fillText(document.getElementById('studentName').value, 400, 220);
+        
+        // Draw Category
+        ctx.font = 'italic bold 32px Arial';
+        ctx.fillStyle = '#da1b60'; // Accent color for award category
+        ctx.fillText(document.getElementById('category').value, 400, 320);
+        
+        // Draw Custom Sentence
+        ctx.font = '20px Arial';
+        ctx.fillStyle = '#444444';
+        const text = document.getElementById('customText').value;
+        wrapText(ctx, text, 400, 420, 600, 28);
+    }
+
+    // Helper function to make long custom text wrap into lines nicely
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+        let words = text.split(' ');
+        let line = '';
+        for(let n = 0; n < words.length; n++) {
+            let testLine = line + words[n] + ' ';
+            let metrics = context.measureText(testLine);
+            if (metrics.width > maxWidth && n > 0) {
+                context.fillText(line, x, y);
+                line = words[n] + ' ';
+                y += lineHeight;
+            } else {
+                line = testLine;
+            }
+        }
+        context.fillText(line, x, y);
+    }
+
+    // Download Handler
+    function downloadImage() {
+        const link = document.createElement('a');
+        link.download = 'personalized-award.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+</script>
+
+</body>
+</html>
